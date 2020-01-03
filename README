@@ -1,0 +1,2 @@
+This program reads LTC (linear time code) from an ALSA audio device
+and presents it as MIDI timecode using the ALSA MIDI system.
