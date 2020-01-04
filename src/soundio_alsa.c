@@ -10,7 +10,6 @@
 #include <sys/poll.h>
 #include <alsa/asoundlib.h>
 
-#include <msglogger/msg_logger.h>
 
 #ifdef VALGRIND
 #include <valgrind.h>
