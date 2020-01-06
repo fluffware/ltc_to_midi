@@ -263,9 +263,6 @@ mtc_sender_send_mtc(MTCSender *io, TimePosition tc, guint16 frame_rate, GTimeVal
   struct snd_seq_real_time stamp;
   stamp.tv_sec = when->tv_sec;
   stamp.tv_nsec = when->tv_usec * 1000;
-
-  tc += 600;
-  stamp.tv_sec += 1;
   
   // Only send a new timestamp until the previuos one has been sent
   if (io->last_timestamp.tv_sec < stamp.tv_sec 
