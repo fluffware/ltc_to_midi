@@ -11,6 +11,7 @@ struct _MTCSender
   int queue_id;
   snd_seq_port_info_t *port_info;
   snd_seq_client_info_t *client_info;
+  snd_seq_real_time_t last_timestamp;
 };
 
 GQuark
@@ -249,7 +250,7 @@ output_smpte(snd_seq_t *seq, int queue, int out_port,
     stamp->tv_nsec += time_step;
     if (stamp->tv_nsec > 1000000000U) {
       stamp->tv_nsec -= 1000000000U;
-    stamp->tv_sec++;
+      stamp->tv_sec++;
     }
   }
   //return 0;
@@ -257,17 +258,26 @@ output_smpte(snd_seq_t *seq, int queue, int out_port,
 }
 
 void
-mtc_sender_send_mtc(MTCSender *io, TimePosition tc, GTimeVal *when)
+mtc_sender_send_mtc(MTCSender *io, TimePosition tc, guint16 frame_rate, GTimeVal *when)
 {
   struct snd_seq_real_time stamp;
   stamp.tv_sec = when->tv_sec;
   stamp.tv_nsec = when->tv_usec * 1000;
 
-  int res = output_smpte(io->seq, io->queue_id, io->port_id,
-			 &stamp, 1000000000/25, tc+300, 25);
-  if (res < 0) {
-    g_warning("Failed sending MIDI event: %s",
-         strerror(-res));
+  tc += 600;
+  stamp.tv_sec += 1;
+  
+  // Only send a new timestamp until the previuos one has been sent
+  if (io->last_timestamp.tv_sec < stamp.tv_sec 
+      || (io->last_timestamp.tv_sec == stamp.tv_sec
+	  && io->last_timestamp.tv_nsec < stamp.tv_nsec)) {
+    int res = output_smpte(io->seq, io->queue_id, io->port_id,
+			   &stamp, 1000000000/frame_rate, tc, frame_rate);
+    if (res < 0) {
+      g_warning("Failed sending MIDI event: %s",
+		strerror(-res));
+    }
   }
+  io->last_timestamp = stamp;
 
 }

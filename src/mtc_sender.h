@@ -37,6 +37,6 @@ void
 mtc_sender_destroy(MTCSender *io);
 
 void
-mtc_sender_send_mtc(MTCSender *io, TimePosition tc, GTimeVal *when);
+mtc_sender_send_mtc(MTCSender *io, TimePosition tc, guint16 frame_rate, GTimeVal *when);
 
 #endif /* __MTC_SENDER_H__7QP4R77342__ */
