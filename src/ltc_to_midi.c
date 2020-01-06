@@ -73,7 +73,7 @@ timecode_changed(TimecodeSource *source,
   guint16 frame_rate = timecode_source_frame_rate(TIMECODE_SOURCE(source));
 
   // Move one second ahead to make sure the timestamp is in the future
-  when.tv_sec += 1;
+  when->tv_sec += 1;
   tc += 600;
   
   mtc_sender_send_mtc(app->mtc_sender, tc, frame_rate, when);
