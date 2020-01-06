@@ -222,7 +222,7 @@ output_smpte(snd_seq_t *seq, int queue, int out_port,
   digits[4] = minutes & 0x0f;
   digits[5] = minutes >>4;
   digits[6] = hours & 0x0f;
-  digits[7] = hours >>4  || type <<1;
+  digits[7] = hours >>4  | type;
   
   snd_seq_ev_clear(&event);
   snd_seq_ev_set_subs(&event);
